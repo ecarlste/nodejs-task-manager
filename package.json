@@ -2,12 +2,12 @@
   "name": "nodejs-task-manager",
   "version": "1.0.0",
   "description": "A task manager app using Node.js and MongoDB",
-  "main": "es6-node-setup.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node lib/app.js",
+    "start": "node lib/index.js",
     "build": "npm run clean && babel src -d lib",
     "clean": "rm -rf lib",
-    "dev": "NODE_ENV=dev nodemon --exec \"npm run build && npm start\" --ignore lib/ --ignore data/ --ignore playground/ -e js,hbs"
+    "dev": "NODE_ENV=dev nodemon --exec \"npm run build && npm start\" --ignore lib/"
   },
   "repository": {
     "type": "git",
@@ -38,6 +38,7 @@
     "prettier": "^1.16.4"
   },
   "dependencies": {
+    "express": "^4.16.4",
     "mongodb": "^3.1.13",
     "mongoose": "^5.4.19",
     "validator": "^10.11.0"
