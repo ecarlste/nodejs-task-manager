@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "node lib/index.js",
+    "start-dev": "node -r dotenv/config lib/index.js",
     "build": "npm run clean && babel src -d lib",
     "clean": "rm -rf lib",
-    "dev": "NODE_ENV=dev nodemon --exec \"npm run build && npm start\" --ignore lib/"
+    "dev": "NODE_ENV=dev nodemon --exec \"npm run build && npm run start-dev\" --ignore lib/"
   },
   "repository": {
     "type": "git",
