@@ -1,6 +1,11 @@
+import dotenv from 'dotenv';
 import express from 'express';
 import './db/mongoose';
 import { tasksRouter, usersRouter } from './routes';
+
+if (process.env.NODE_ENV === 'dev') {
+  dotenv.config();
+}
 
 const app = express();
 

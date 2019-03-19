@@ -2,6 +2,7 @@
 import mongoose from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -37,6 +38,12 @@ const userSchema = new mongoose.Schema({
     }
   }
 });
+
+userSchema.methods.generateAuthToken = async function() {
+  const user = this;
+
+  return jwt.sign({ _id: user.id.toString() }, process.env.JWT_SIGNING_KEY);
+};
 
 userSchema.statics.findByCredentials = async (email, password) => {
   const user = await User.findOne({ email });
