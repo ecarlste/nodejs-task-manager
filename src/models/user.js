@@ -51,7 +51,7 @@ userSchema.methods.generateAuthToken = async function() {
   const user = this;
   const token = jwt.sign({ _id: user.id.toString() }, process.env.JWT_SIGNING_KEY);
 
-  user.tokens = user.tokens.concat({ token });
+  user.tokens = [...user.tokens, { token }];
   await user.save();
 
   return token;
