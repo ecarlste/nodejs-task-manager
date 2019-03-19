@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import { Router } from 'express';
 import multer from 'multer';
+import sharp from 'sharp';
 import auth from '../middleware/auth';
 import User from '../models/user';
 
@@ -99,7 +100,12 @@ router.post(
   auth,
   upload.single('avatar'),
   async (req, res) => {
-    req.user.avatar = req.file.buffer;
+    const buffer = await sharp(req.file.buffer)
+      .resize({ width: 250, height: 250 })
+      .png()
+      .toBuffer();
+
+    req.user.avatar = buffer;
     await req.user.save();
     res.send();
   },
@@ -113,7 +119,7 @@ router.get('/me/avatar', auth, async (req, res) => {
     return res.status(404).send();
   }
 
-  return res.set('Content-Type', 'image/jpg').send(req.user.avatar);
+  return res.set('Content-Type', 'image/png').send(req.user.avatar);
 });
 
 router.delete('/me/avatar', auth, async (req, res) => {
