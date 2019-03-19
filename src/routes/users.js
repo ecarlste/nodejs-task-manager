@@ -4,6 +4,7 @@ import multer from 'multer';
 import sharp from 'sharp';
 import auth from '../middleware/auth';
 import User from '../models/user';
+import { sendCancellationEmail, sendWelcomeEmail } from '../emails/account';
 
 const router = new Router();
 
@@ -12,6 +13,7 @@ router.post('', async (req, res) => {
 
   try {
     const token = await user.generateAuthToken();
+    sendWelcomeEmail(user.email, user.name);
     res.status(201).send({ user, token });
   } catch (error) {
     res.status(400).send(error);
@@ -33,7 +35,7 @@ router.post('/login', async (req, res) => {
 router.post('/logout', auth, async (req, res) => {
   try {
     req.user.tokens = req.user.tokens.filter(token => {
-      return token.token != req.token;
+      return token.token !== req.token;
     });
     await req.user.save();
 
@@ -74,6 +76,7 @@ router.put('/me', auth, async (req, res) => {
 
 router.delete('/me', auth, async (req, res) => {
   try {
+    sendCancellationEmail(req.user.email, req.user.name);
     await req.user.remove();
     return res.send();
   } catch (error) {
