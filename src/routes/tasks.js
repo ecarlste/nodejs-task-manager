@@ -23,11 +23,16 @@ router.get('', auth, async (req, res) => {
     conditions = { ...conditions, completed: req.query.completed };
   }
 
+  const options = {
+    limit: parseInt(req.query.limit, 10),
+    skip: parseInt(req.query.skip, 10)
+  };
+
   try {
-    const tasks = await Task.find(conditions);
+    const tasks = await Task.find(conditions, null, options);
     res.send(tasks);
   } catch (error) {
-    res.status(500).send();
+    res.status(500).send(error);
   }
 });
 
