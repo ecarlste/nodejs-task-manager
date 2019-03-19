@@ -108,6 +108,14 @@ router.post(
   }
 );
 
+router.get('/me/avatar', auth, async (req, res) => {
+  if (!req.user.avatar) {
+    return res.status(404).send();
+  }
+
+  return res.set('Content-Type', 'image/jpg').send(req.user.avatar);
+});
+
 router.delete('/me/avatar', auth, async (req, res) => {
   if (req.user.avatar) {
     req.user.avatar = undefined;
