@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import User from '../models/user';
+import auth from '../middleware/auth';
 
 const router = new Router();
 
@@ -14,7 +15,19 @@ router.post('', async (req, res) => {
   }
 });
 
-router.get('', async (req, res) => {
+router.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.findByCredentials(email, password);
+    const token = await user.generateAuthToken();
+    res.send({ user, token });
+  } catch (error) {
+    res.status(401).send();
+  }
+});
+
+router.get('', auth, async (req, res) => {
   try {
     const users = await User.find({});
     res.send(users);
@@ -23,7 +36,7 @@ router.get('', async (req, res) => {
   }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', auth, async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (!user) {
@@ -36,7 +49,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', auth, async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
 
@@ -56,7 +69,7 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.params.id);
 
@@ -67,18 +80,6 @@ router.delete('/:id', async (req, res) => {
     return res.send();
   } catch (error) {
     return res.status(500).send(error);
-  }
-});
-
-router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-
-  try {
-    const user = await User.findByCredentials(email, password);
-    const token = await user.generateAuthToken();
-    res.send({ user, token });
-  } catch (error) {
-    res.status(401).send();
   }
 });
 
