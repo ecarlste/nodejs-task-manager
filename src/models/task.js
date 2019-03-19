@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-export default mongoose.model('Task', {
+const Task = mongoose.model('Task', {
   description: {
     type: String,
     required: true,
@@ -9,5 +9,12 @@ export default mongoose.model('Task', {
   completed: {
     type: Boolean,
     default: false
+  },
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: 'User'
   }
 });
+
+export default Task;
