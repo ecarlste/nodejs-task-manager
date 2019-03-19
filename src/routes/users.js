@@ -108,4 +108,12 @@ router.post(
   }
 );
 
+router.delete('/me/avatar', auth, async (req, res) => {
+  if (req.user.avatar) {
+    req.user.avatar = undefined;
+    await req.user.save();
+  }
+  res.send();
+});
+
 export default router;
