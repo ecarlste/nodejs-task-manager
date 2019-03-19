@@ -16,9 +16,9 @@ router.post('', auth, async (req, res) => {
   }
 });
 
-router.get('', async (req, res) => {
+router.get('', auth, async (req, res) => {
   try {
-    const tasks = await Task.find({});
+    const tasks = await Task.find({ owner: req.user._id });
     res.send(tasks);
   } catch (error) {
     res.status(500).send();
@@ -39,16 +39,18 @@ router.get('/:id', auth, async (req, res) => {
   }
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', auth, async (req, res) => {
   try {
-    const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true
-    });
+    const task = await Task.findOne({ _id: req.params.id, owner: req.user._id });
 
     if (!task) {
       return res.status(404).send(req.body);
     }
+
+    Object.keys(req.body).forEach(prop => {
+      task[prop] = req.body[prop];
+    });
+    task.save();
 
     return res.send(task);
   } catch (error) {
@@ -56,9 +58,9 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
   try {
-    const task = await Task.findByIdAndDelete(req.params.id);
+    const task = await Task.findOneAndDelete({ _id: req.params.id, owner: req.user._id });
 
     if (!task) {
       return res.status(404).send();
