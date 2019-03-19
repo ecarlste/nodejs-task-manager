@@ -1,7 +1,8 @@
 /* eslint-disable no-underscore-dangle */
 import { Router } from 'express';
-import User from '../models/user';
+import multer from 'multer';
 import auth from '../middleware/auth';
+import User from '../models/user';
 
 const router = new Router();
 
@@ -77,6 +78,14 @@ router.delete('/me', auth, async (req, res) => {
   } catch (error) {
     return res.status(500).send(error);
   }
+});
+
+const upload = multer({
+  dest: `avatars`
+});
+
+router.post('/me/avatar', upload.single('avatar'), (req, res) => {
+  res.send();
 });
 
 export default router;
