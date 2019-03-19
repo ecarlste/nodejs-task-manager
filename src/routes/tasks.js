@@ -23,9 +23,21 @@ router.get('', auth, async (req, res) => {
     conditions = { ...conditions, completed: req.query.completed };
   }
 
+  const sort = {};
+  if (req.query.sortBy) {
+    const parts = req.query.sortBy.split(':');
+
+    if (!['asc', 'desc'].includes(parts[1])) {
+      return res.status(400).send({ error: 'Invalid orderyBy direction specified' });
+    }
+
+    sort[parts[0]] = parts[1] === 'asc' ? 1 : -1;
+  }
+
   const options = {
     limit: parseInt(req.query.limit, 10),
-    skip: parseInt(req.query.skip, 10)
+    skip: parseInt(req.query.skip, 10),
+    sort
   };
 
   try {
