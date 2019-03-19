@@ -27,13 +27,8 @@ router.post('/login', async (req, res) => {
   }
 });
 
-router.get('', auth, async (req, res) => {
-  try {
-    const users = await User.find({});
-    res.send(users);
-  } catch (error) {
-    res.status(500).send();
-  }
+router.get('/me', auth, async (req, res) => {
+  res.send(req.user);
 });
 
 router.get('/:id', auth, async (req, res) => {
