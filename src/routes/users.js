@@ -70,4 +70,15 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+router.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.findByCredentials(email, password);
+    res.send(user);
+  } catch (error) {
+    res.status(401).send();
+  }
+});
+
 export default router;
