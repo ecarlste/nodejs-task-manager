@@ -1,8 +1,10 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable func-names */
 import mongoose from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import Tasks from './task';
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -95,6 +97,14 @@ userSchema.pre('save', async function(next) {
   if (user.isModified('password')) {
     user.password = await bcrypt.hash(user.password, 8);
   }
+
+  next();
+});
+
+userSchema.pre('remove', async function(next) {
+  const user = this;
+
+  await Tasks.deleteMany({ owner: user._id });
 
   next();
 });
