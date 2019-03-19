@@ -17,8 +17,14 @@ router.post('', auth, async (req, res) => {
 });
 
 router.get('', auth, async (req, res) => {
+  let conditions = { owner: req.user._id };
+
+  if (req.query.completed) {
+    conditions = { ...conditions, completed: req.query.completed };
+  }
+
   try {
-    const tasks = await Task.find({ owner: req.user._id });
+    const tasks = await Task.find(conditions);
     res.send(tasks);
   } catch (error) {
     res.status(500).send();
