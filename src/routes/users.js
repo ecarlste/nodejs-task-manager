@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import { Router } from 'express';
 import User from '../models/user';
 import auth from '../middleware/auth';
@@ -77,12 +78,7 @@ router.put('/:id', auth, async (req, res) => {
 
 router.delete('/me', auth, async (req, res) => {
   try {
-    const user = await User.findByIdAndDelete(req.user._id);
-
-    if (!user) {
-      return res.status(404).send();
-    }
-
+    await req.user.remove();
     return res.send();
   } catch (error) {
     return res.status(500).send(error);
