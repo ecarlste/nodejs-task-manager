@@ -56,21 +56,15 @@ router.get('/me', auth, async (req, res) => {
   res.send(req.user);
 });
 
-router.put('/:id', auth, async (req, res) => {
+router.put('/me', auth, async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
-
-    if (!user) {
-      return res.status(404).send(req.body);
-    }
-
     Object.keys(req.body).forEach(prop => {
-      user[prop] = req.body[prop];
+      req.user[prop] = req.body[prop];
     });
 
-    await user.save();
+    await req.user.save();
 
-    return res.send(user);
+    return res.send(req.user);
   } catch (error) {
     return res.status(400).send(error);
   }
