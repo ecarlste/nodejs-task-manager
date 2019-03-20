@@ -5,10 +5,13 @@
   "main": "index.js",
   "scripts": {
     "start": "node lib/index.js",
-    "start-dev": "node -r dotenv/config lib/index.js",
     "build": "npm run clean && babel src -d lib",
     "clean": "rm -rf lib",
-    "dev": "NODE_ENV=dev nodemon --exec \"npm run build && npm run start-dev\" --ignore lib/"
+    "dev": "env-cmd ./config/dev.env nodemon --exec \"npm run build && npm run start\" --ignore lib/ --ignore tests/",
+    "test": "env-cmd ./config/test.env jest --watch"
+  },
+  "jest": {
+    "testEnvironment": "node"
   },
   "repository": {
     "type": "git",
@@ -27,6 +30,7 @@
     "@babel/plugin-transform-runtime": "^7.3.4",
     "@babel/preset-env": "^7.3.4",
     "babel-eslint": "^10.0.1",
+    "env-cmd": "^8.0.2",
     "eslint": "^5.15.2",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-config-prettier": "^4.1.0",
@@ -36,14 +40,15 @@
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-prettier": "^3.0.1",
     "eslint-plugin-react": "^7.12.4",
+    "jest": "^24.5.0",
     "nodemon": "^1.18.10",
-    "prettier": "^1.16.4"
+    "prettier": "^1.16.4",
+    "supertest": "^4.0.2"
   },
   "dependencies": {
     "@babel/runtime": "^7.3.4",
     "@sendgrid/mail": "^6.3.1",
     "bcrypt": "^3.0.4",
-    "dotenv": "^7.0.0",
     "express": "^4.16.4",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.1.13",

@@ -63,3 +63,4 @@ typings/
 lib/
 avatars/
 .DS_Store
+config/
