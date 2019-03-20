@@ -120,3 +120,25 @@ test('Should allow user to upload avatar image', async () => {
   const user = await User.findById(userOneId);
   expect(user.avatar).toEqual(expect.any(Buffer));
 });
+
+test('Should update valid user fields', async () => {
+  await request(app)
+    .put('/users/me')
+    .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
+    .send({ name: 'Kevin' })
+    .expect(200);
+
+  const user = await User.findById(userOneId);
+  expect(user.name).toEqual('Kevin');
+});
+
+test('Should not update invalid user fields', async () => {
+  await request(app)
+    .put('/users/me')
+    .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
+    .send({ _id: new mongoose.Types.ObjectId() })
+    .expect(400);
+
+  const user = await User.findById(userOneId);
+  expect(user._id).toEqual(userOneId);
+});
